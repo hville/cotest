@@ -1,76 +1,72 @@
 <!-- markdownlint-disable MD004 MD007 MD010 MD041	MD022 MD024	MD032 -->
+# cotest
 
-# micro
-# TODO git, publish, raise other packages to 1.0.0
-1. [Introduction](#introduction)
-1. [Installation](#installation)
-1. [Usage](#usage)
-1. [Test](#test)
-1. [License](#license)
+*yet another unit test assertion and test runner* -
+***small, simple, no dependencies***
 
-MicroTest is an asynchronous testing framework built for Node.js. It's under 40 lines of code, and has no dependencies.
+[Why](#Why) |
+[What](#What) |
+[How](#How) |
+[License](#license)
 
-Usage
-Create a folder called test/ in the root of your project directory.
+## Why
 
-Within this folder create .js testing files that look like this:
-## Introduction
+This originated as an attempt to have assertions that are less verbose because `assert.notDeepStrictEqual` and the likes are ugly.
+(if you have grown used to terms, try in another language to get that first time feel once again: `verifie.nonEgaliteRecursiveStricte`)
 
-shrinks and paints TAP test output
-* Strips out the good news (ok...) and most of the extra line feeds
-* Highlights the bad news in red (not ok...)
-* Adds a one-line summary showing all passed, failed and skipped tests (eg. Summary: ..sx..x.)
-* Includes a light cli interface to resolve files and directories
-* No other dependencies, 5 files, all under 5kb for light local instals
+Package [tt](https://www.npmjs.com/package/tt) was used as a start and was modified considerably to change the API.
 
-There are multiple good reporters available but most have a relatively large set of dependencies and don't report skiped tests.	While `untap` works with any tap output, the initial design goal was to work with `tt` to provide a very light locally installed test suit for small projects.
+## What
 
+Features:
 
-## Installation
+* Javascript Comparison Operators (`==`, `!==`, `===`, `!===`, `<`, `<=`, `>`, `>=`)
+* Other symbols for nested object
+	* `{==}`: deepEqual
+	* `!{==}`: notDeepEqual
+	* `{===}`: strictDeepEqual
+	* `!{===}`: notStrictDeepEqual
+* Async support
+* Basic test runner to run multiple files and directories
+* Single function, no methods, nothing to learn, nothing to remember
+* Basic coloring of errors
+* Compact reporting
+* No dependencies, under 100 SLOC
 
-In node, from the project root folder type `npm i -D untap`.
-You also need a testing library that produces TAP output (eg. tape, tt, tap)
+Limitations
+* Node only (not for browsers)
+* No nesting of tests
+* No configuration
 
+## How
 
-## Usage
+### Installation
 
-`untap` can be used inside javascript test files, inside an npm script or at the command line.
+In node, from the project root folder type `npm i -D cotest` to install.
 
-### npm script use
-inside the package.json file:
+### Use in a test file
+
+```javascript
+	var co = require('cotest')
+	co('async test, call the function argument to end' function(done) {
+		co('<', Math.abs(error), 0.001)
+		setTimeout(done, 0)
+	})
+	co('sync test - no function argument needed' function() {
+		co('==', 1+1, 2)
+		co('{==}', [1, 2], [1, 2])
+	})
 ```
+
+### Use in `package.json`
+
+```json
 "scripts": {
-	"test": "untap mytestdirectory",
-	"test_file": "untap mytestdirectory/mytestfile"
+	"test": "cotest mytestdirectory",
+	"test_file": "cotest mytestdirectory/mytestfile"
 }
 ```
-As a lightweight test runner `untap` locates the files and runs them all.
-
-
-### direct use inside a test file
-at the top of the test file:
-```
-require(untap).pipe()
-```
-All `console.log` calls that follow are intercepted and formatted.
-
-
-### command line use
-Directly from the command line:
-```
-> node mytestdirectory/mytestfile | untap
-```
-```
-> tape mytestdirectory | untap
-```
-
-## Test
-
-In node, from the project root type `npm test`. The tests include errors to see the output format.
-
 
 ## License
 
 Released under the [MIT License](http://www.opensource.org/licenses/MIT)
-
-

@@ -5,8 +5,13 @@
 	"keywords": ["unit test", "test", "test runner"],
 	"author": "Hugo Villeneuve",
 	"main": "./index.js",
+	"private": false,
 	"bin": {
 		"cotest": "./cli.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/hville/cotest.git"
 	},
 	"dependencies": {},
 	"devDependencies": {},
