@@ -18,7 +18,7 @@ Package [tt](https://www.npmjs.com/package/tt) was used as a start and was modif
 
 ## What
 
-Features:
+### Features
 
 * Javascript Comparison Operators (`==`, `!==`, `===`, `!===`, `<`, `<=`, `>`, `>=`)
 * Other symbols for nested object
@@ -33,7 +33,8 @@ Features:
 * Compact reporting
 * No dependencies, under 100 SLOC
 
-Limitations
+### Limitations
+
 * Node only (not for browsers)
 * No nesting of tests
 * No configuration
