@@ -1,6 +1,6 @@
 {
 	"name": "cotest",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "unit test assertion and test runner using comparison operators",
 	"keywords": ["unit test", "test", "test runner"],
 	"author": "Hugo Villeneuve",
@@ -16,7 +16,7 @@
 	"dependencies": {},
 	"devDependencies": {},
 	"scripts": {
-		"test": "node ./cli test"
+		"test": "node ./cli tst"
 	},
 	"license": "MIT",
 	"publishConfig": {

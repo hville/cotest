@@ -1,11 +1,14 @@
 /* eslint eqeqeq: 0, no-console: 0*/
 'use strict'
-
+/**
+ * Inpired and modified from https://www.npmjs.com/package/tt and https://www.npmjs.com/package/untap
+ */
 var assert = require('assert')
 
 module.exports = miniTest
 
 var tests = [],
+		flags = [],
 		active = {},
 		pass = 0,
 		fail = 0,
@@ -32,21 +35,28 @@ var ops = {
 	'!<'		:		function(v,r) { assert.equal(v < r, false, v + ' !< ' + r) },
 	'!<='	:		function(v,r) { assert.equal(v <= r, false, v + ' !<= ' + r) },
 }
-
-function miniTest(text, valORfcn, ref) {
-	currentMode(text, valORfcn, ref)
+/**
+ * Single test function to either declare a test or an assertion
+ * @param	{string} text - either the title of a test or the assertion type
+ * @param	{any} fcnORval - either the test function or the value to assert
+ * @param	{any} onlyORref - either exclusive test or the reference for an assertion
+ * @return {void}
+ */
+function miniTest(text, fcnORval, onlyORref) {
+	currentMode(text, fcnORval, onlyORref)
 }
-function init(name, fcn) {
-	push(name, fcn)
+function init(name, fcn, only) {
+	push(name, fcn, only)
 	currentMode = push
 	setTimeout(exec, 0)
 }
-function push(name, fcn) {
+function push(name, fcn, only) {
 	tests.push({
 		head: name + ' [',
 		test: fcn,
 		text: ''
 	})
+	if (only) flags.push(tests.length-1)
 }
 function test(op, val, ref) {
 	try {
@@ -75,6 +85,7 @@ function trim(str) {
 function exec() {
 	currentMode = test
 	console.log('\n=== MINI TEST ===')
+	if (flags.length) tests = flags.map(function(i) { return tests[i] })
 	process.nextTick(run)
 }
 function run() {

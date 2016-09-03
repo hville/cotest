@@ -10,15 +10,15 @@ if (args.length) runTest()
 
 function runTest () {
 	args.forEach(function (arg) {
-		var file = resolveArg(arg)
-		if (file) require(file)
+		var files = resolveArg(arg)
+		if (files.length) files.forEach(require)
 	})
 }
 function resolveArg (arg) {
 	var fullPath = path.resolve(process.cwd(), arg),
 			type = pathType(fullPath)
 
-	if (isJS(arg) && type === 'file') return fullPath
+	if (isJS(arg) && type === 'file') return [fullPath]
 	if (type === 'directory') return getDir(fullPath)
 	if (!isJS(arg)) return resolveArg(arg + '.js')
 	console.log ('WARNING: %s is not a valid file name', arg)
