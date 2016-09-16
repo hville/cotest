@@ -4,10 +4,7 @@
 *yet another unit test assertion and test runner* -
 ***small, simple, no dependencies***
 
-[Why](#Why) |
-[What](#What) |
-[How](#How) |
-[License](#license)
+• [Why](#Why) • [What](#What) • [How](#How) • [License](#license) •
 
 # Why
 
