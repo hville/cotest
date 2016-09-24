@@ -47,9 +47,9 @@ In node, from the project root folder type `npm i -D cotest` to install.
 
 command line: `cotest file1 directory1 directory2 file2 ...`
 
-test declaration: `cotest(titleString, testFunction [, priority])`
+test declaration: `cotest(titleString, testFunction [, priority[, message]])`
 
-assertion inside a test: `cotest(operator, valueToTest, referenceValue)`
+assertion inside a test: `cotest(operator, valueToTest, referenceValue[, additional message])`
 
 ## Use in a test file
 

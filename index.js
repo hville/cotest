@@ -18,53 +18,57 @@ var NORM = '\u001b[0m',
 		RED = '\u001b[31m'
 
 var ops = {
-	'{==}' :	function(v,r) { assert.deepEqual(v, r, v + ' {==} ' + r) },
-	'{===}':	function(v,r) { assert.deepStrictEqual(v, r, v + ' {===} ' + r) },
-	'!{==}':	function(v,r) { assert.notDeepEqual(v, r, v + ' !{==} ' + r) },
-	'!{===}': function(v,r) { assert.notDeepStrictEqual(v, r, v + ' !{===} ' + r) },
-	'=='	 :	function(v,r) { assert.equal(v, r, v + ' == ' + r) },
-	'==='	:		function(v,r) { assert.strictEqual(v, r, v + ' === ' + r) },
-	'!='	 :	function(v,r) { assert.notEqual(v, r, v + ' != ' + r) },
-	'!=='	:		function(v,r) { assert.notStrictEqual(v, r, v + ' !== ' + r) },
-	'>'		:		function(v,r) { assert.equal(v > r, true, v + ' > ' + r) },
-	'>='	:		function(v,r) { assert.equal(v >= r, true, v + ' >= ' + r) },
-	'<'		:		function(v,r) { assert.equal(v < r, true, v + ' < ' + r) },
-	'<='	:		function(v,r) { assert.equal(v <= r, true, v + ' <= ' + r) },
-	'!>'		:		function(v,r) { assert.equal(v > r, false, v + ' !> ' + r) },
-	'!>='	:		function(v,r) { assert.equal(v >= r, false, v + ' !>= ' + r) },
-	'!<'		:		function(v,r) { assert.equal(v < r, false, v + ' !< ' + r) },
-	'!<='	:		function(v,r) { assert.equal(v <= r, false, v + ' !<= ' + r) },
+	'{==}' :	function(v,r,m) { assert.deepEqual(v, r, v + ' {==} ' + r + m) },
+	'{===}':	function(v,r,m) { assert.deepStrictEqual(v, r, v + ' {===} ' + r + m) },
+	'!{==}':	function(v,r,m) { assert.notDeepEqual(v, r, v + ' !{==} ' + r + m) },
+	'!{===}': function(v,r,m) { assert.notDeepStrictEqual(v, r, v + ' !{===} ' + r + m) },
+	'=='	 :	function(v,r,m) { assert.equal(v, r, v + ' == ' + r + m) },
+	'==='	:		function(v,r,m) { assert.strictEqual(v, r, v + ' === ' + r + m) },
+	'!='	 :	function(v,r,m) { assert.notEqual(v, r, v + ' != ' + r + m) },
+	'!=='	:		function(v,r,m) { assert.notStrictEqual(v, r, v + ' !== ' + r + m) },
+	'>'		:		function(v,r,m) { assert.equal(v > r, true, v + ' > ' + r + m) },
+	'>='	:		function(v,r,m) { assert.equal(v >= r, true, v + ' >= ' + r + m) },
+	'<'		:		function(v,r,m) { assert.equal(v < r, true, v + ' < ' + r + m) },
+	'<='	:		function(v,r,m) { assert.equal(v <= r, true, v + ' <= ' + r + m) },
+	'!>'		:		function(v,r,m) { assert.equal(v > r, false, v + ' !> ' + r + m) },
+	'!>='	:		function(v,r,m) { assert.equal(v >= r, false, v + ' !>= ' + r + m) },
+	'!<'		:		function(v,r,m) { assert.equal(v < r, false, v + ' !< ' + r + m) },
+	'!<='	:		function(v,r,m) { assert.equal(v <= r, false, v + ' !<= ' + r + m) },
 }
 /**
  * Single test function to either declare a test or an assertion
  * @param	{string} text - either the title of a test or the assertion type
- * @param	{any} fcnORval - either the test function or the value to assert
- * @param	{any} onlyORref - either exclusive test or the reference for an assertion
+ * @param	{?} fcnORval - either the test function or the value to assert
+ * @param	{?} onlyORref - either exclusive test or the reference for an assertion
+ * @param	{string} [msg] - message
  * @return {void}
  */
-function miniTest(text, fcnORval, onlyORref) {
-	currentMode(text, fcnORval, onlyORref)
+function miniTest(text, fcnORval, onlyORref, msg) {
+	currentMode(text, fcnORval, onlyORref, msg)
 }
-function init(name, fcn, only) {
-	push(name, fcn, only)
+function init(name, fcn, only, msg) {
+	push(name, fcn, only, msg)
 	currentMode = push
 	setTimeout(exec, 0)
 }
-function push(name, fcn, only) {
+function push(name, fcn, only, msg) {
+	if (only && only.constructor === String) {
+		msg = only
+		only = false
+	}
 	tests.push({
 		head: name + ' [',
 		test: fcn,
-		text: ''
+		text: msg ? msg + '\n' : ''
 	})
-	if (only) flags.push(tests.length-1)
+	if (only === true) flags.push(tests.length-1)
 }
-function test(op, val, ref) {
+function test(op, val, ref, msg) {
 	try {
-		ops[op](val, ref)
+		ops[op](val, ref, msg ? ', '+msg:'')
 		pass++
 		active.head += '.'
 	} catch (e) {
-		fail++
 		active.head += RED + 'x' + NORM
 		// ignore everything up to the run() function
 		Error.captureStackTrace(e, miniTest)
