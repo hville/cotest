@@ -69,6 +69,7 @@ function test(op, val, ref, msg) {
 		pass++
 		active.head += '.'
 	} catch (e) {
+		fail++
 		active.head += RED + 'x' + NORM
 		// ignore everything up to the run() function
 		Error.captureStackTrace(e, miniTest)
@@ -95,8 +96,15 @@ function exec() {
 function run() {
 	if (!tests.length) return done()
 	active = tests.shift()
+	if (!active.test.length) return log()
+	setTimeout(timeout, 200)
 	active.test(log)
-	if (!active.test.length) log()
+	//TODO timeout
+}
+function timeout() {
+	fail++
+	active.head += RED + 'T' + NORM
+	log()
 }
 function log() {
 	console.log('\n' + active.head + ']')
