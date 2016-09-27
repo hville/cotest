@@ -12,7 +12,8 @@ var tests = [],
 		active = {},
 		pass = 0,
 		fail = 0,
-		currentMode = init
+		currentMode = init,
+		maxtime = 250
 // color format
 var NORM = '\u001b[0m',
 		RED = '\u001b[31m'
@@ -45,6 +46,9 @@ var ops = {
  */
 function miniTest(text, fcnORval, onlyORref, msg) {
 	currentMode(text, fcnORval, onlyORref, msg)
+}
+miniTest.timeout = function(ms) {
+	maxtime = ms
 }
 function init(name, fcn, only, msg) {
 	push(name, fcn, only, msg)
@@ -96,10 +100,14 @@ function exec() {
 function run() {
 	if (!tests.length) return done()
 	active = tests.shift()
-	if (!active.test.length) return log()
-	setTimeout(timeout, 200)
-	active.test(log)
-	//TODO timeout
+	if (!active.test.length) {
+		active.test(log)
+		log()
+	}
+	else {
+		setTimeout(timeout, maxtime)
+		active.test(log)
+	}
 }
 function timeout() {
 	fail++
