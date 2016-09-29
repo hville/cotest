@@ -1,6 +1,8 @@
 /* eslint no-console: 0, no-loop-func: 0*/
 var t = require('../index')
 
+t('0. empty test, no function')
+
 t('1. primitives - comparison', function() {
 	t('==', 2, 2)
 	t('!==', 3, 4)
@@ -22,3 +24,4 @@ t('4. more async', function(end) {
 	t('!==', 3, 4)
 	t('!{==}', 3, 4)
 })
+

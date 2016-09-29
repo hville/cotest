@@ -64,7 +64,7 @@ function push(name, fcn, only, msg) {
 	}
 	tests.push({
 		head: tab1 + name + ' [',
-		test: fcn,
+		test: fcn || noop,
 		text: msg ? tab1 +msg + '\n' : ''
 	})
 	if (only === true) flags.push(tests.length-1)
@@ -129,3 +129,4 @@ function done() {
 
 	process.exit(fail)
 }
+function noop(){}
