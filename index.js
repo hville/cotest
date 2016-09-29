@@ -93,7 +93,7 @@ function trim(str) {
 }
 function exec() {
 	currentMode = test
-	console.log('\n=== MINI TEST ===')
+	console.log('\n\n=== cotest ===')
 	if (flags.length) tests = flags.map(function(i) { return tests[i] })
 	process.nextTick(run)
 }
