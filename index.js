@@ -13,7 +13,9 @@ var tests = [],
 		pass = 0,
 		fail = 0,
 		currentMode = init,
-		maxtime = 250
+		maxtime = 250,
+		tab1 = '  ',
+		tab2 = '    '
 // color format
 var NORM = '\u001b[0m',
 		RED = '\u001b[31m'
@@ -61,9 +63,9 @@ function push(name, fcn, only, msg) {
 		only = false
 	}
 	tests.push({
-		head: name + ' [',
+		head: tab1 + name + ' [',
 		test: fcn,
-		text: msg ? msg + '\n' : ''
+		text: msg ? tab1 +msg + '\n' : ''
 	})
 	if (only === true) flags.push(tests.length-1)
 }
@@ -83,9 +85,9 @@ function test(op, val, ref, msg) {
 function stack(e) {
 	var lst = !e.stack ? [] : e.stack.split(/\n/).slice(0,-3).map(trim)
 	if (lst.length && !e.message) e.message = lst[0]
-	active.text += '\n ' + (lst.length ? lst.shift() : e.message)
+	active.text += '\n' + tab2 + (lst.length ? lst.shift() : e.message)
 	if (lst.length) {
-		active.text += '\n ' + lst.join('\n ')
+		active.text += '\n' + tab2 + lst.join('\n ')
 	}
 }
 function trim(str) {
@@ -121,8 +123,9 @@ function log() {
 }
 function done() {
 	console.log('\n=== END ===')
-	console.log(' pass %d/%d', pass, pass + fail)
-	fail ? console.log(RED+' fail %d/%d'+NORM, fail, pass + fail) : console.log(' fail 0/%d', pass + fail)
+	console.log(tab1 + 'pass %d/%d', pass, pass + fail)
+	fail ? console.log(tab1 + RED + 'fail %d/%d'+NORM, fail, pass + fail)
+	: console.log(tab1 + 'fail 0/%d', pass + fail)
 
 	process.exit(fail)
 }
