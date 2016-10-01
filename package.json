@@ -1,6 +1,6 @@
 {
 	"name": "cotest",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"description": "unit test assertion and test runner using comparison operators",
 	"keywords": ["unit test", "test", "test runner"],
 	"author": "Hugo Villeneuve",

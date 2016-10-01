@@ -1,10 +1,10 @@
-<!-- markdownlint-disable MD004 MD007 MD010 MD041	MD022 MD024	MD032 -->
+<!-- markdownlint-disable MD004 MD007 MD010 MD041 MD022 MD024 MD032 -->
 # cotest
 
 *yet another unit test assertion and test runner* -
 ***small, simple, no dependencies***
 
-• [Why](#Why) • [What](#What) • [How](#How) • [License](#license) •
+• [Why](#why) • [What](#what) • [How](#how) • [License](#license) •
 
 # Why
 
@@ -35,7 +35,7 @@ Package [tt](https://www.npmjs.com/package/tt) was used as a start and was modif
 
 * Node only (not for browsers)
 * No nesting of tests
-* No configuration
+* Limited configuration
 
 # How
 
@@ -50,6 +50,18 @@ command line: `cotest file1 directory1 directory2 file2 ...`
 test declaration: `cotest(titleString, testFunction [, priority[, message]])`
 
 assertion inside a test: `cotest(operator, valueToTest, referenceValue[, additional message])`
+
+### Async use
+
+Test are normally automatically completed after the test function is executed.
+Example: `cotest('syncTest', function() { /*assertions*/ })`
+
+To change this behaviour, add a callback to the test function. This calback must be called to end the test.
+Example: `cotest('asyncTest', function(done) { /*assertions*/; done()})`
+
+If a callback is declared but not called, the test fails after 250ms.
+To change the default duration: `cotest.timeout(500)`
+
 
 ## Use in a test file
 
