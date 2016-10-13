@@ -4,6 +4,8 @@
 *yet another unit test assertion and test runner* -
 ***small, simple, no dependencies***
 
+![ScreenCap](./cotest.gif)
+
 • [Why](#why) • [What](#what) • [How](#how) • [License](#license) •
 
 # Why
