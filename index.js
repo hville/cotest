@@ -21,22 +21,23 @@ var NORM = '\u001b[0m',
 		RED = '\u001b[31m'
 
 var ops = {
-	'{==}' :	function(v,r,m) { assert.deepEqual(v, r, v + ' {==} ' + r + m) },
-	'{===}':	function(v,r,m) { assert.deepStrictEqual(v, r, v + ' {===} ' + r + m) },
-	'!{==}':	function(v,r,m) { assert.notDeepEqual(v, r, v + ' !{==} ' + r + m) },
+	'{==}' : function(v,r,m) { assert.deepEqual(v, r, v + ' {==} ' + r + m) },
+	'{===}': function(v,r,m) { assert.deepStrictEqual(v, r, v + ' {===} ' + r + m) },
+	'!{==}': function(v,r,m) { assert.notDeepEqual(v, r, v + ' !{==} ' + r + m) },
 	'!{===}': function(v,r,m) { assert.notDeepStrictEqual(v, r, v + ' !{===} ' + r + m) },
-	'=='	 :	function(v,r,m) { assert.equal(v, r, v + ' == ' + r + m) },
-	'==='	:		function(v,r,m) { assert.strictEqual(v, r, v + ' === ' + r + m) },
-	'!='	 :	function(v,r,m) { assert.notEqual(v, r, v + ' != ' + r + m) },
-	'!=='	:		function(v,r,m) { assert.notStrictEqual(v, r, v + ' !== ' + r + m) },
-	'>'		:		function(v,r,m) { assert.equal(v > r, true, v + ' > ' + r + m) },
-	'>='	:		function(v,r,m) { assert.equal(v >= r, true, v + ' >= ' + r + m) },
-	'<'		:		function(v,r,m) { assert.equal(v < r, true, v + ' < ' + r + m) },
-	'<='	:		function(v,r,m) { assert.equal(v <= r, true, v + ' <= ' + r + m) },
-	'!>'		:		function(v,r,m) { assert.equal(v > r, false, v + ' !> ' + r + m) },
-	'!>='	:		function(v,r,m) { assert.equal(v >= r, false, v + ' !>= ' + r + m) },
-	'!<'		:		function(v,r,m) { assert.equal(v < r, false, v + ' !< ' + r + m) },
-	'!<='	:		function(v,r,m) { assert.equal(v <= r, false, v + ' !<= ' + r + m) },
+	'==' : function(v,r,m) { assert.equal(v, r, v + ' == ' + r + m) },
+	'===' : function(v,r,m) { assert.strictEqual(v, r, v + ' === ' + r + m) },
+	'!=' : function(v,r,m) { assert.notEqual(v, r, v + ' != ' + r + m) },
+	'!==' : function(v,r,m) { assert.notStrictEqual(v, r, v + ' !== ' + r + m) },
+	'>' : function(v,r,m) { assert.equal(v > r, true, v + ' > ' + r + m) },
+	'>=' : function(v,r,m) { assert.equal(v >= r, true, v + ' >= ' + r + m) },
+	'<' : function(v,r,m) { assert.equal(v < r, true, v + ' < ' + r + m) },
+	'<=' : function(v,r,m) { assert.equal(v <= r, true, v + ' <= ' + r + m) },
+	'!>' : function(v,r,m) { assert.equal(v > r, false, v + ' !> ' + r + m) },
+	'!>=' : function(v,r,m) { assert.equal(v >= r, false, v + ' !>= ' + r + m) },
+	'!<' : function(v,r,m) { assert.equal(v < r, false, v + ' !< ' + r + m) },
+	'!<=' : function(v,r,m) { assert.equal(v <= r, false, v + ' !<= ' + r + m) },
+	'!' : function(v,r,m) { assert.equal(v <= r, false, v + ' !<= ' + r + m) }
 }
 /**
  * Single test function to either declare a test or an assertion
