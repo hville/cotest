@@ -37,7 +37,8 @@ var ops = {
 	'!>=' : function(v,r,m) { assert.equal(v >= r, false, v + ' !>= ' + r + m) },
 	'!<' : function(v,r,m) { assert.equal(v < r, false, v + ' !< ' + r + m) },
 	'!<=' : function(v,r,m) { assert.equal(v <= r, false, v + ' !<= ' + r + m) },
-	'!' : function(v,r,m) { assert.equal(v <= r, false, v + ' !<= ' + r + m) }
+	'!' : function(v,m) { assert(!v, '!' + v + m) },
+	'!!' : function(v,m) { assert(!!v, '!!' + v + m) }
 }
 /**
  * Single test function to either declare a test or an assertion

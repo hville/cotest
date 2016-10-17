@@ -8,6 +8,8 @@ t('1. primitives - comparison', function() {
 	t('==', null, undefined)
 	t('!=', undefined, 0)
 	t('!==', 0, false)
+	t('!', null)
+	t('!!', 55)
 })
 t('2. object - comparison', function() {
 	t('!{===}', [], 'str')

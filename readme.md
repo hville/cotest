@@ -20,6 +20,7 @@ Package [tt](https://www.npmjs.com/package/tt) was used as a start and was modif
 ## Features
 
 * Javascript Comparison Operators (`==`, `!==`, `===`, `!===`, `<`, `<=`, `>`, `>=`)
+* Negation (`!`, `!!`)
 * Other symbols for nested object
 	* `{==}`: deepEqual
 	* `!{==}`: notDeepEqual
@@ -75,6 +76,7 @@ To change the default duration: `cotest.timeout(500)`
 	})
 	co('sync test - no function argument needed' function() {
 		co('==', 1+1, 2)
+		co('!', null)
 		co('{==}', [1, 2], [1, 2])
 	}, 'Any Truthy Value as 3rd argument will only run flagges tests')
 	co('sync test - no function argument needed' function() {
