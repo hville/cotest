@@ -70,6 +70,7 @@ function push(name, fcn, only, msg) {
 	if (only === true) flags.push(tests.length-1)
 }
 function test(op, val, ref, msg) {
+	if (!ops[op]) throw Error('first assertion parameter must be a valid operation string')
 	try {
 		ops[op](val, ref, msg ? ', '+msg:'')
 		pass++
