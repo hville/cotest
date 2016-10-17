@@ -65,7 +65,6 @@ Example: `cotest('asyncTest', function(done) { /*assertions*/; done()})`
 If a callback is declared but not called, the test fails after 250ms.
 To change the default duration: `cotest.timeout(500)`
 
-
 ## Use in a test file
 
 ```javascript
