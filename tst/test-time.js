@@ -1,4 +1,4 @@
-/* eslint no-console: 0, no-loop-func: 0*/
+/* eslint no-console: 0, no-loop-func: 0, no-unused-vars:0*/
 var t = require('../index')
 
 t('timeout', function(end) {
