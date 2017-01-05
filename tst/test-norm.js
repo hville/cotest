@@ -25,3 +25,12 @@ t('4. more async', function(end) {
 	t('!==', 3, 4)
 	t('!{==}', 3, 4)
 })
+t.skip('skip async', function(end) {
+	setTimeout(end, 0)
+	t('!==', 3, 4)
+	t('!{==}', 3, 4)
+})
+t('skip assertions', function() {
+	t.skip('!==', 3, 4)
+	t('!{==}', 3, 4)
+})
