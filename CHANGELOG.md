@@ -1,0 +1,58 @@
+<!-- markdownlint-disable MD012 MD022 MD024 MD026 MD032 MD041 -->
+
+# Change Log
+
+- based on [Keep a Changelog](http://keepachangelog.com/)
+- adheres to [Semantic Versioning](http://semver.org/).
+
+## [Unreleased]
+- ~~Removed, Changed, Deprecated, Added, Fixed, Security~~
+- ~~browser use and/or version~~
+
+## [2.0.0] - 2017-01-05
+### Changed
+- reporter to show skipped tests and assertions
+
+### Deprecated
+- the `only` test argument flag (i.e. prefer `t.only(name, test)` over `t(name, test, true)`)
+
+### Added
+- `CHANGELOG.md`
+- `.editorconfig`
+- `t.only` to single-out test(s)
+- `t.skip` to skip tests or assertions
+- Example in `README.md`
+
+### Fixed
+- reporter for Boolean operator messages
+
+## [1.6.1] - 2016-10-17
+### Added
+- new boolean operators `!` and `!!`
+- additional error message for invalid operation
+
+## [1.5.0] - 2016-10-01
+### Added
+- new `t.timeout()` function to configure the timeout duration
+
+## [1.4.0] - 2016-09-29
+### Added
+- allowance for empty tests
+### Fixed
+- minor reporter looks
+
+## [1.3.0] - 2016-09-27
+### Fixed
+- timeout for async tests
+
+## [1.1.1] - 2016-09-24
+### Added
+- additional test message argument to add comments
+
+## [1.0.1] - 2016-09-16
+### Fixed
+- `README.md`
+
+## [1.0.0] - 2016-09-03
+### Added
+- First publish

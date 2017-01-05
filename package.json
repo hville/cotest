@@ -1,8 +1,8 @@
 {
 	"name": "cotest",
-	"version": "1.6.1",
+	"version": "2.0.0",
 	"description": "unit test assertion and test runner using comparison operators",
-	"keywords": ["unit test", "test", "test runner"],
+	"keywords": ["unit test", "test", "test runner", "async"],
 	"author": "Hugo Villeneuve",
 	"main": "./index.js",
 	"private": false,
