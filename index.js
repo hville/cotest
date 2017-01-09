@@ -135,7 +135,7 @@ function formatErrorStack(e) {
 	const lst = !e.stack ? [] : e.stack.split(/\n/).slice(0,-3).map(trim)
 	if (lst.length && !e.message) e.message = lst[0]
 	active.text += RET + RED + tab2 + (lst.length ? lst.shift() : e.message) + NORM
-	if (lst.length) active.text += RET + tab2 + lst.join('\n ') + RET
+	if (lst.length) active.text += RET + tab2 + lst.join('\n' + tab2) + RET
 }
 function trim(str) {
 	return str.trim()
@@ -177,7 +177,7 @@ function log() {
 	process.nextTick(run)
 }
 function done() {
-	const sum = countA.pass + countA.pass + countA.fail
+	const sum = countA.pass + countA.fail + countA.skip
 
 	console.log('\n===',
 		`END OF ${countT.done} ${countT.done > 1 ? 'TESTS' : 'TEST'}`,

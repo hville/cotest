@@ -9,6 +9,11 @@
 - ~~Removed, Changed, Deprecated, Added, Fixed, Security~~
 - ~~browser use and/or version~~
 
+## [2.0.1] - 2017-01-09
+### Fixed
+- fixed regression in the summary test total
+- fixed tabulation in multi-line errors
+
 ## [2.0.0] - 2017-01-05
 ### Changed
 - reporter to show skipped tests and assertions
