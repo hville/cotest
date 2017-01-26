@@ -9,6 +9,11 @@
 - ~~Removed, Changed, Deprecated, Added, Fixed, Security~~
 - ~~browser use and/or version~~
 
+## [2.0.2] - 2017-01-26
+### Fixed
+- fixed error if first test is `test.only`
+
+
 ## [2.0.1] - 2017-01-09
 ### Fixed
 - fixed regression in the summary test total

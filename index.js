@@ -84,6 +84,11 @@ function init(name, fcn, only, msg) {
 	currentMode = push
 	setTimeout(exec, 0)
 }
+init.only = function(name, fcn, only, msg) {
+	push.only(name, fcn, only, msg)
+	currentMode = push
+	setTimeout(exec, 0)
+}
 // add every asserting function to the list of tests
 function push(name, fcn, only, msg) {
 	if (isMessage(only)) {
