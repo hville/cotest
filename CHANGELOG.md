@@ -13,6 +13,9 @@
 ### Fixed
 - fixed error if first test is `test.only`
 
+### Changed
+- reverted ES6 features back to ES5 for possible future browser version
+
 
 ## [2.0.1] - 2017-01-09
 ### Fixed

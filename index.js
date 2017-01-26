@@ -4,32 +4,32 @@
  * Inspired and modified from https://www.npmjs.com/package/tt and https://www.npmjs.com/package/untap
  */
 
-const assert = require('assert')
+var assert = require('assert')
 
-const tests = [],
-			countT = {
-				done: 0,
-				skip: 0
-			},
-			countA = {
-				pass: 0,
-				fail: 0,
-				skip: 0
-			}
+var tests = [],
+		countT = {
+			done: 0,
+			skip: 0
+		},
+		countA = {
+			pass: 0,
+			fail: 0,
+			skip: 0
+		}
 
-let flags = false,
+var flags = false,
 		currentMode = init,
 		maxtime = 250,
 		active = {}
 
 // color format and fixed text
-const NORM = '\u001b[0m',
-			RED = '\u001b[31m',
-			RET = '\n',
-			tab1 = '  ',
-			tab2 = '    '
+var NORM = '\u001b[0m',
+		RED = '\u001b[31m',
+		RET = '\n',
+		tab1 = '  ',
+		tab2 = '    '
 
-const ops = {
+var ops = {
 	'{==}' : function(v,r,m) { assert.deepEqual(v, r, message(v, '{==}', r, m)) },
 	'{===}': function(v,r,m) { assert.deepStrictEqual(v, r, message(v, '{===}', r, m)) },
 	'!{==}': function(v,r,m) { assert.notDeepEqual(v, r, message(v, '!{==}', r, m)) },
@@ -53,8 +53,8 @@ const ops = {
 	'!!' : function(v,m) { assert(!!v, message('', '!!', v, m)) },
 }
 function message(val, opr, ref, msg) {
-	var txt = `${val} ${opr} ${ref}`
-	return msg === undefined ? txt : txt + `, ${msg}`
+	var txt = val + ' ' + opr + ' ' + ref
+	return msg === undefined ? txt : txt + ', ' + msg
 }
 
 module.exports = miniTest
@@ -137,7 +137,7 @@ test.skip = function testSkip(name, fcn, only, msg) {
 
 function formatErrorStack(e) {
 	// ignore everything up to the run() function in last 3 lines
-	const lst = !e.stack ? [] : e.stack.split(/\n/).slice(0,-3).map(trim)
+	var lst = !e.stack ? [] : e.stack.split(/\n/).slice(0,-3).map(trim)
 	if (lst.length && !e.message) e.message = lst[0]
 	active.text += RET + RED + tab2 + (lst.length ? lst.shift() : e.message) + NORM
 	if (lst.length) active.text += RET + tab2 + lst.join('\n' + tab2) + RET
@@ -182,14 +182,14 @@ function log() {
 	process.nextTick(run)
 }
 function done() {
-	const sum = countA.pass + countA.fail + countA.skip
+	var sum = countA.pass + countA.fail + countA.skip
 
 	console.log('\n===',
-		`END OF ${countT.done} ${countT.done > 1 ? 'TESTS' : 'TEST'}`,
-		countT.skip ? `(${countT.skip} skipped) ===` : '==='
+		'END OF ' + countT.done + (countT.done > 1 ? ' TESTS' : ' TEST'),
+		countT.skip ? '('+countT.skip+' skipped)' : '==='
 	)
 
-	console.log(`${tab1}pass ${countA.pass}/${sum}`)
+	console.log(tab1+'pass '+countA.pass+'/'+sum)
 
 	countA.fail ? console.log(tab1 + RED + 'fail %d/%d'+NORM, countA.fail, sum)
 	: console.log(tab1 + 'fail 0/%d', sum)
@@ -200,6 +200,6 @@ function done() {
 }
 
 function isMessage(msg) {
-	const typ = typeof msg
+	var typ = typeof msg
 	return typ === 'string' || typ === 'number'
 }
