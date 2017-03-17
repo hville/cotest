@@ -9,6 +9,10 @@
 - ~~Removed, Changed, Deprecated, Added, Fixed, Security~~
 - ~~browser use and/or version~~
 
+## [2.1.0] - 2017-03-17
+### Added
+- 'catch' operator similar to `assert.throws`
+
 ## [2.0.2] - 2017-01-26
 ### Fixed
 - fixed error if first test is `test.only`

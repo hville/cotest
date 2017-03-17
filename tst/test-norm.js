@@ -34,3 +34,10 @@ t('skip assertions', function() {
 	t.skip('!==', 3, 4)
 	t('!{==}', 3, 4)
 })
+t('catch operator', function() {
+	t('catch', function() { throw Error() })
+	t('catch', function() { throw Error() }, 'should throw')
+	t('catch', function() { throw Error() }, Error)
+	t('catch', function() { throw Error() }, function() {return true}, 'should throw')
+	t('catch', function() { throw Error('x') }, function(e) {return e.message === 'x'}, 'should throw')
+})

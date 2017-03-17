@@ -30,6 +30,7 @@ var NORM = '\u001b[0m',
 		tab2 = '    '
 
 var ops = {
+
 	'{==}' : function(v,r,m) { assert.deepEqual(v, r, message(v, '{==}', r, m)) },
 	'{===}': function(v,r,m) { assert.deepStrictEqual(v, r, message(v, '{===}', r, m)) },
 	'!{==}': function(v,r,m) { assert.notDeepEqual(v, r, message(v, '!{==}', r, m)) },
@@ -51,6 +52,8 @@ var ops = {
 
 	'!' : function(v,m) { assert(!v, message('', '!', v, m)) },
 	'!!' : function(v,m) { assert(!!v, message('', '!!', v, m)) },
+
+	'catch' : function(b,e,m) { assert.throws(b, e, m) }
 }
 function message(val, opr, ref, msg) {
 	var txt = val + ' ' + opr + ' ' + ref
