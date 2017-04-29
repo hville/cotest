@@ -18,7 +18,7 @@ var tests = [],
 		}
 
 var flags = false,
-		currentMode = init,
+		currentMode = init, // --> push --> test
 		maxtime = 250,
 		active = {}
 
@@ -61,12 +61,13 @@ function message(val, opr, ref, msg) {
 }
 
 module.exports = miniTest
+
 /**
  * Single test function to either declare a test or an assertion
- * @param	{string} text - either the title of a test or the assertion type
- * @param	{?} fcnORval - either the test function or the value to assert
- * @param	{?} onlyORref - either exclusive test or the reference for an assertion
- * @param	{string} [msg] - message
+ * @param {string} text test name or operator
+ * @param {*} [fcnORval] test function or test value
+ * @param {*} [onlyORref] message or only flag
+ * @param {*} [msg] message
  * @return {void}
  */
 function miniTest(text, fcnORval, onlyORref, msg) {
@@ -75,24 +76,70 @@ function miniTest(text, fcnORval, onlyORref, msg) {
 miniTest.timeout = function(ms) {
 	maxtime = ms
 }
+/**
+ * @param {string} text test name or operator
+ * @param {*} fcnORval test function or test value
+ * @param {*} [onlyORref] message or only flag
+ * @param {*} [msg] message
+ * @return {void}
+ */
 miniTest.skip = function skip(text, fcnORval, onlyORref, msg) {
 	currentMode.skip(text, fcnORval, onlyORref, msg)
 }
+/**
+ * @param {string} text test name or operator
+ * @param {*} fcnORval test function or test value
+ * @param {*} [onlyORref] message or only flag
+ * @param {*} [msg] message
+ * @return {void}
+ */
 miniTest.only = function only(text, fcnORval, onlyORref, msg) {
 	currentMode.only(text, fcnORval, onlyORref, msg)
 }
-
+/**
+ * @param {string} name test name
+ * @param {*} fcn test function
+ * @param {*} [only] message or only flag
+ * @param {*} [msg] message
+ * @return {void}
+ */
 function init(name, fcn, only, msg) {
 	push(name, fcn, only, msg)
 	currentMode = push
 	setTimeout(exec, 0)
 }
+/**
+ * @param {string} name test name
+ * @param {*} fcn test function
+ * @param {*} [only] message or only flag
+ * @param {*} [msg] message
+ * @return {void}
+ */
 init.only = function(name, fcn, only, msg) {
 	push.only(name, fcn, only, msg)
 	currentMode = push
 	setTimeout(exec, 0)
 }
-// add every asserting function to the list of tests
+/**
+ * @param {string} name test name
+ * @param {*} fcn test function
+ * @param {*} [only] message or only flag
+ * @param {*} [msg] message
+ * @return {void}
+ */
+init.skip = function(name, fcn, only, msg) { //eslint-disable-line no-unused-vars
+	currentMode = push
+	setTimeout(exec, 0)
+}
+
+/**
+ * add every asserting function to the list of tests
+ * @param {string} name test name
+ * @param {*} fcn test function
+ * @param {*} [only] message or only flag
+ * @param {*} [msg] message
+ * @return {void}
+ */
 function push(name, fcn, only, msg) {
 	if (isMessage(only)) {
 		msg = only
@@ -107,15 +154,38 @@ function push(name, fcn, only, msg) {
 	// if any test is flagged, non-flagged tests will be skipped
 	if (only && !flags) flags = true
 }
+
+/**
+ * @param {string} name test name
+ * @param {*} fcn test function
+ * @param {*} [only] message or only flag
+ * @param {*} [msg] message
+ * @return {void}
+ */
 push.only = function pushOnly(name, fcn, only, msg) {
 	if (isMessage(only)) push(name, fcn, true, only)
 	else push(name, fcn, true, msg)
 }
+
+/**
+ * @param {string} name test name
+ * @param {*} fcn test function
+ * @param {*} [only] message or only flag
+ * @param {*} [msg] message
+ * @return {void}
+ */
 push.skip = function pushSkip(name, fcn, only, msg) {
 	if (isMessage(only)) push(name, fcn, false, only)
 	else push(name, fcn, false, msg)
 }
 
+/**
+ * @param {string} op test operator
+ * @param {*} val test value
+ * @param {*} [ref] reference value
+ * @param {*} [msg] message
+ * @return {void}
+ */
 function test(op, val, ref, msg) {
 	if (op === 'skip') {
 		countA.skip++
@@ -136,6 +206,9 @@ function test(op, val, ref, msg) {
 }
 test.skip = function testSkip(name, fcn, only, msg) {
 	test('skip', fcn, only, msg)
+}
+test.only = function testOnly(op, val, ref, msg) {
+	test(op, val, ref, msg)
 }
 
 function formatErrorStack(e) {

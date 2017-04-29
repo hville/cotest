@@ -8,6 +8,11 @@
 ## [Unreleased]
 - ~~Removed, Changed, Deprecated, Added, Fixed, Security~~
 - ~~browser use and/or version~~
+- TODO test crash on first t.skip call
+
+## [2.1.0] - 2017-03-17
+### Fixed
+- Added jsdoc comments to avoid function signature warnings in editors
 
 ## [2.1.0] - 2017-03-17
 ### Added
