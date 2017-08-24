@@ -56,8 +56,11 @@ var ops = {
 	'catch' : function(b,e,m) { assert.throws(b, e, m) }
 }
 function message(val, opr, ref, msg) {
-	var txt = val + ' ' + opr + ' ' + ref
+	var txt = toString(val) + ' ' + opr + ' ' + toString(ref)
 	return msg === undefined ? txt : txt + ', ' + msg
+}
+function toString(v) { // to handle Object.create(null)
+	return v == null ? v : v.toString ? v.toString() : Object.prototype.toString.call(v)
 }
 
 module.exports = miniTest
