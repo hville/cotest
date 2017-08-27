@@ -1,6 +1,8 @@
 /* eslint no-console: 0, no-loop-func: 0*/
 var t = require('../index')
 
+t.skip('0. skipped test')
+
 t('1. primitives - comparison', function() {
 	t('==', 2, 2)
 	t('!==', 3, 4)

@@ -1,6 +1,6 @@
 {
 	"name": "cotest",
-	"version": "2.1.1",
+	"version": "3.0.0",
 	"description": "unit test assertion and test runner using comparison operators",
 	"keywords": [
 		"unit test",

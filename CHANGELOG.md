@@ -7,10 +7,13 @@
 
 ## [Unreleased]
 - ~~Removed, Changed, Deprecated, Added, Fixed, Security~~
-- ~~browser use and/or version~~
-- TODO test crash on first t.skip call
+
+## [3.0.0] - 2017-08-27
+### Change
 - `catch` replaced by `throws` and `!throws`
-- deprecate `only` argument
+- deprecate `only` argument (undocumented)
+- moved assertions in external `assert-op` lib
+- removed calls to node `assert` and `process` to allow browser use
 
 
 ## [2.1.0] - 2017-03-17

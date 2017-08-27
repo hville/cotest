@@ -59,7 +59,6 @@ ct.skip('4. skip', function() {
 
 ## Limitations
 
-* Node only (not for browsers)
 * No nesting of tests
 * Limited configuration
 

@@ -4,6 +4,7 @@
 var assert = require('assert-op')
 
 var tests = [],
+		timeID = null,
 		countT = {
 			done: 0,
 			skip: 0
@@ -26,7 +27,7 @@ var NORM = '\u001b[0m',
 		tab1 = '  ',
 		tab2 = '    '
 
-module.exports = cotest
+module.exports = coTest
 
 /**
  * Single test function to either declare a test or an assertion
@@ -36,11 +37,11 @@ module.exports = cotest
  * @param {*} [msg] message
  * @return {void}
  */
-function cotest(text, fcnORval, onlyORref, msg) {
+function coTest(text, fcnORval, onlyORref, msg) {
 	//@ts-ignore
 	currentMode('', text, fcnORval, onlyORref, msg)
 }
-cotest.timeout = function(ms) {
+coTest.timeout = function(ms) {
 	maxtime = ms
 }
 /**
@@ -50,7 +51,7 @@ cotest.timeout = function(ms) {
  * @param {string} [msg] message
  * @return {void}
  */
-cotest.skip = function skip(text, fcnORval, msgORref, msg) {
+coTest.skip = function skip(text, fcnORval, msgORref, msg) {
 	//@ts-ignore
 	currentMode('skip', text, fcnORval, msgORref, msg)
 }
@@ -61,7 +62,7 @@ cotest.skip = function skip(text, fcnORval, msgORref, msg) {
  * @param {string} [msg] message
  * @return {void}
  */
-cotest.only = function only(text, fcnORval, msgORref, msg) {
+coTest.only = function only(text, fcnORval, msgORref, msg) {
 	//@ts-ignore
 	currentMode('only', text, fcnORval, msgORref, msg)
 }
@@ -119,32 +120,38 @@ function test(flag, op, val, ref, msg) {
 	} catch (e) {
 		countA.fail++
 		active.head += RED + 'x' + NORM
-		Error.captureStackTrace(e, cotest)
+		//Error.captureStackTrace(e, coTest)
 		formatErrorStack(e)
 	}
 }
 
-function formatErrorStack(e) {
-	// ignore everything up to the run() function in last 3 lines
-	var lst = !e.stack ? [] : e.stack.split(/\n/).slice(0,-3).map(trim)
-	if (lst.length && !e.message) e.message = lst[0]
-	active.text += RET + RED + tab2 + (lst.length ? lst.shift() : e.message) + NORM
-	if (lst.length) active.text += RET + tab2 + lst.join('\n' + tab2) + RET
-}
 
-function trim(str) {
-	return str.trim()
+var coTestRE = /coTest/,
+		runNextRE = /runNext/
+function formatErrorStack(e) {
+	var lst = e.stack ? e.stack.split(/\n/) : [],
+			start = 0,
+			until = lst.length
+	for (var i=0; i<until; ++i) {
+		lst[i] = lst[i].trim()
+		if (!start && coTestRE.test(lst[i])) start = i+1
+		else if (start && runNextRE.test(lst[i])) until = i
+	}
+	lst = lst.slice(start, until)
+
+	active.text += RET + RED + tab2 + e.message + NORM
+	if (lst.length) active.text += RET + tab2 + lst.join('\n' + tab2) + RET
 }
 
 // close the assertion entries and perform pre-run ops
 function exec() {
 	currentMode = test
-	console.log('\n\n=== cotest ===')
-	process.nextTick(run)
+	console.log('\n\n=== coTest ===')
+	setTimeout(runNext, 0)
 }
 
 // perform every tests
-function run() {
+function runNext() {
 	if (!tests.length) return done()
 	active = tests.shift()
 	// skipped test with 'false' flag ... if any test is flagged, ignore all unflagged tests
@@ -159,21 +166,29 @@ function run() {
 		log()
 	}
 	else {
-		setTimeout(timeout, maxtime)
-		active.test(log)
+		timeID = setTimeout(timeoutFail, maxtime)
+		active.test(timeoutPass)
 	}
 }
 
-function timeout() {
+function timeoutFail() {
+	timeID = null
 	countA.fail++
 	active.head += RED + 'T' + NORM
 	log()
 }
+function timeoutPass() {
+	if (timeID !== null) {
+		clearTimeout(timeID)
+		log()
+	}
+}
+
 
 function log() {
 	console.log(RET + active.head + ']')
 	if (active.text) console.log(RED + active.text + NORM)
-	process.nextTick(run)
+	setTimeout(runNext, 0)
 }
 
 function done() {
@@ -185,11 +200,7 @@ function done() {
 	)
 
 	console.log(tab1+'pass '+countA.pass+'/'+sum)
-
-	countA.fail ? console.log(tab1 + RED + 'fail %d/%d'+NORM, countA.fail, sum)
-	: console.log(tab1 + 'fail 0/%d', sum)
-
+	countA.fail ? console.log(tab1 + RED + 'fail %d/%d'+NORM, countA.fail, sum) : console.log(tab1 + 'fail 0/%d', sum)
 	if (countA.skip) console.log(tab1 + RED + 'skip %d/%d'+NORM, countA.skip, sum)
-
-	process.exit(countA.fail)
+	if (countA.fail) throw ('FAILED')
 }
