@@ -52,7 +52,7 @@ co.skip('4. skip', function() {
   * `!{==}`: notDeepEqual
   * `{===}`: strictDeepEqual
   * `!{===}`: notStrictDeepEqual
-* `catch` for assert.throws
+* `throws` for assert.throws, `!throws` for doesNotThrows
 * Async support
 * Skip full test groups or individual assertions with `t.skip()`
 * Only run selected test group(s) with `t.only()`

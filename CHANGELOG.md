@@ -9,6 +9,8 @@
 - ~~Removed, Changed, Deprecated, Added, Fixed, Security~~
 - ~~browser use and/or version~~
 - TODO test crash on first t.skip call
+- `catch` replaced by `throws` and `!throws`
+
 
 ## [2.1.0] - 2017-03-17
 ### Fixed

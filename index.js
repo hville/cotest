@@ -1,10 +1,7 @@
 /* eslint eqeqeq: 0, no-console: 0*/
 'use strict'
-/**
- * Inspired and modified from https://www.npmjs.com/package/tt and https://www.npmjs.com/package/untap
- */
 
-var assert = require('assert')
+var assert = require('assert-op')
 
 var tests = [],
 		countT = {
@@ -29,38 +26,7 @@ var NORM = '\u001b[0m',
 		tab1 = '  ',
 		tab2 = '    '
 
-var ops = {
-
-	'{==}' : function(v,r,m) { assert.deepEqual(v, r, message(v, '{==}', r, m)) },
-	'{===}': function(v,r,m) { assert.deepStrictEqual(v, r, message(v, '{===}', r, m)) },
-	'!{==}': function(v,r,m) { assert.notDeepEqual(v, r, message(v, '!{==}', r, m)) },
-	'!{===}': function(v,r,m) { assert.notDeepStrictEqual(v, r, message(v, '!{===}', r, m)) },
-	'==' : function(v,r,m) { assert.equal(v, r, message(v, '==', r, m)) },
-	'===' : function(v,r,m) { assert.strictEqual(v, r, message(v, '===', r, m)) },
-	'!=' : function(v,r,m) { assert.notEqual(v, r, message(v, '!=', r, m)) },
-	'!==' : function(v,r,m) { assert.notStrictEqual(v, r, message(v, '!==', r, m)) },
-
-	'>' : function(v,r,m) { assert.equal(v > r, true, message(v, '>', r, m)) },
-	'<' : function(v,r,m) { assert.equal(v < r, true, message(v, '<', r, m)) },
-	'>=' : function(v,r,m) { assert.equal(v >= r, true, message(v, '>=', r, m)) },
-	'<=' : function(v,r,m) { assert.equal(v <= r, true, message(v, '<=', r, m)) },
-
-	'!>' : function(v,r,m) { assert.equal(v > r, false, message(v, '!>', r, m)) },
-	'!<' : function(v,r,m) { assert.equal(v < r, false, message(v, '!<', r, m)) },
-	'!>=' : function(v,r,m) { assert.equal(v >= r, false, message(v, '!>=', r, m)) },
-	'!<=' : function(v,r,m) { assert.equal(v <= r, false, message(v, '!<=', r, m)) },
-
-	'!' : function(v,m) { assert(!v, message('', '!', v, m)) },
-	'!!' : function(v,m) { assert(!!v, message('', '!!', v, m)) },
-
-	'catch' : function(b,e,m) { assert.throws(b, e, m) }
-}
-function message(val, opr, ref, msg) {
-	var txt = val + ' ' + opr + ' ' + ref
-	return msg === undefined ? txt : txt + ', ' + msg
-}
-
-module.exports = miniTest
+module.exports = cotest
 
 /**
  * Single test function to either declare a test or an assertion
@@ -70,10 +36,10 @@ module.exports = miniTest
  * @param {*} [msg] message
  * @return {void}
  */
-function miniTest(text, fcnORval, onlyORref, msg) {
+function cotest(text, fcnORval, onlyORref, msg) {
 	currentMode(text, fcnORval, onlyORref, msg)
 }
-miniTest.timeout = function(ms) {
+cotest.timeout = function(ms) {
 	maxtime = ms
 }
 /**
@@ -83,7 +49,7 @@ miniTest.timeout = function(ms) {
  * @param {*} [msg] message
  * @return {void}
  */
-miniTest.skip = function skip(text, fcnORval, onlyORref, msg) {
+cotest.skip = function skip(text, fcnORval, onlyORref, msg) {
 	currentMode.skip(text, fcnORval, onlyORref, msg)
 }
 /**
@@ -93,7 +59,7 @@ miniTest.skip = function skip(text, fcnORval, onlyORref, msg) {
  * @param {*} [msg] message
  * @return {void}
  */
-miniTest.only = function only(text, fcnORval, onlyORref, msg) {
+cotest.only = function only(text, fcnORval, onlyORref, msg) {
 	currentMode.only(text, fcnORval, onlyORref, msg)
 }
 /**
@@ -192,15 +158,14 @@ function test(op, val, ref, msg) {
 		active.head += 's'
 		return
 	}
-	if (!ops[op]) throw Error('first assertion parameter must be a valid operation string')
 	try {
-		ops[op](val, ref, msg)
+		assert(op, val, ref, msg)
 		countA.pass++
 		active.head += '.'
 	} catch (e) {
 		countA.fail++
 		active.head += RED + 'x' + NORM
-		Error.captureStackTrace(e, miniTest)
+		Error.captureStackTrace(e, cotest)
 		formatErrorStack(e)
 	}
 }
