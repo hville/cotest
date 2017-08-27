@@ -37,7 +37,8 @@ module.exports = cotest
  * @return {void}
  */
 function cotest(text, fcnORval, onlyORref, msg) {
-	currentMode(text, fcnORval, onlyORref, msg)
+	//@ts-ignore
+	currentMode('', text, fcnORval, onlyORref, msg)
 }
 cotest.timeout = function(ms) {
 	maxtime = ms
@@ -45,115 +46,68 @@ cotest.timeout = function(ms) {
 /**
  * @param {string} text test name or operator
  * @param {*} fcnORval test function or test value
- * @param {*} [onlyORref] message or only flag
- * @param {*} [msg] message
+ * @param {*} [msgORref] message or only flag
+ * @param {string} [msg] message
  * @return {void}
  */
-cotest.skip = function skip(text, fcnORval, onlyORref, msg) {
-	currentMode.skip(text, fcnORval, onlyORref, msg)
+cotest.skip = function skip(text, fcnORval, msgORref, msg) {
+	//@ts-ignore
+	currentMode('skip', text, fcnORval, msgORref, msg)
 }
 /**
  * @param {string} text test name or operator
  * @param {*} fcnORval test function or test value
- * @param {*} [onlyORref] message or only flag
- * @param {*} [msg] message
+ * @param {*} [msgORref] message or only flag
+ * @param {string} [msg] message
  * @return {void}
  */
-cotest.only = function only(text, fcnORval, onlyORref, msg) {
-	currentMode.only(text, fcnORval, onlyORref, msg)
+cotest.only = function only(text, fcnORval, msgORref, msg) {
+	//@ts-ignore
+	currentMode('only', text, fcnORval, msgORref, msg)
 }
+
 /**
+ * @param {string} flag
  * @param {string} name test name
  * @param {*} fcn test function
- * @param {*} [only] message or only flag
- * @param {*} [msg] message
+ * @param {string} [msg] message
  * @return {void}
  */
-function init(name, fcn, only, msg) {
-	push(name, fcn, only, msg)
-	currentMode = push
-	setTimeout(exec, 0)
-}
-/**
- * @param {string} name test name
- * @param {*} fcn test function
- * @param {*} [only] message or only flag
- * @param {*} [msg] message
- * @return {void}
- */
-init.only = function(name, fcn, only, msg) {
-	push.only(name, fcn, only, msg)
-	currentMode = push
-	setTimeout(exec, 0)
-}
-/**
- * @param {string} name test name
- * @param {*} fcn test function
- * @param {*} [only] message or only flag
- * @param {*} [msg] message
- * @return {void}
- */
-init.skip = function(name, fcn, only, msg) { //eslint-disable-line no-unused-vars
+function init(flag, name, fcn, msg) {
+	push(flag, name, fcn, msg)
 	currentMode = push
 	setTimeout(exec, 0)
 }
 
 /**
  * add every asserting function to the list of tests
+ * @param {string} flag
  * @param {string} name test name
- * @param {*} fcn test function
- * @param {*} [only] message or only flag
- * @param {*} [msg] message
+ * @param {Function} fcn test function
+ * @param {string} [msg] message
  * @return {void}
  */
-function push(name, fcn, only, msg) {
-	if (isMessage(only)) {
-		msg = only
-		only = undefined
-	}
+function push(flag, name, fcn, msg) {
 	tests.push({
 		head: tab1 + name + ' [',
 		test: fcn,
 		text: msg ? tab1 +msg + RET : '',
-		flag: fcn ? only : false
+		flag: fcn ? flag : 'skip'
 	})
 	// if any test is flagged, non-flagged tests will be skipped
-	if (only && !flags) flags = true
+	if (!flags && flag === 'only') flags = true
 }
 
 /**
- * @param {string} name test name
- * @param {*} fcn test function
- * @param {*} [only] message or only flag
- * @param {*} [msg] message
- * @return {void}
- */
-push.only = function pushOnly(name, fcn, only, msg) {
-	if (isMessage(only)) push(name, fcn, true, only)
-	else push(name, fcn, true, msg)
-}
-
-/**
- * @param {string} name test name
- * @param {*} fcn test function
- * @param {*} [only] message or only flag
- * @param {*} [msg] message
- * @return {void}
- */
-push.skip = function pushSkip(name, fcn, only, msg) {
-	if (isMessage(only)) push(name, fcn, false, only)
-	else push(name, fcn, false, msg)
-}
-
-/**
+ * @param {string} flag
  * @param {string} op test operator
  * @param {*} val test value
  * @param {*} [ref] reference value
  * @param {*} [msg] message
  * @return {void}
  */
-function test(op, val, ref, msg) {
-	if (op === 'skip') {
+function test(flag, op, val, ref, msg) {
+	if (flag === 'skip' || op === 'skip') {
 		countA.skip++
 		active.head += 's'
 		return
@@ -169,12 +123,6 @@ function test(op, val, ref, msg) {
 		formatErrorStack(e)
 	}
 }
-test.skip = function testSkip(name, fcn, only, msg) {
-	test('skip', fcn, only, msg)
-}
-test.only = function testOnly(op, val, ref, msg) {
-	test(op, val, ref, msg)
-}
 
 function formatErrorStack(e) {
 	// ignore everything up to the run() function in last 3 lines
@@ -183,21 +131,24 @@ function formatErrorStack(e) {
 	active.text += RET + RED + tab2 + (lst.length ? lst.shift() : e.message) + NORM
 	if (lst.length) active.text += RET + tab2 + lst.join('\n' + tab2) + RET
 }
+
 function trim(str) {
 	return str.trim()
 }
+
 // close the assertion entries and perform pre-run ops
 function exec() {
 	currentMode = test
 	console.log('\n\n=== cotest ===')
 	process.nextTick(run)
 }
+
 // perform every tests
 function run() {
 	if (!tests.length) return done()
 	active = tests.shift()
 	// skipped test with 'false' flag ... if any test is flagged, ignore all unflagged tests
-	if (active.flag === false || (flags && !active.flag)) {
+	if (active.flag === 'skip' || (flags && active.flag !== 'only')) {
 		active.head += 'SKIP'
 		countT.skip++
 		log()
@@ -212,16 +163,19 @@ function run() {
 		active.test(log)
 	}
 }
+
 function timeout() {
 	countA.fail++
 	active.head += RED + 'T' + NORM
 	log()
 }
+
 function log() {
 	console.log(RET + active.head + ']')
 	if (active.text) console.log(RED + active.text + NORM)
 	process.nextTick(run)
 }
+
 function done() {
 	var sum = countA.pass + countA.fail + countA.skip
 
@@ -238,9 +192,4 @@ function done() {
 	if (countA.skip) console.log(tab1 + RED + 'skip %d/%d'+NORM, countA.skip, sum)
 
 	process.exit(countA.fail)
-}
-
-function isMessage(msg) {
-	var typ = typeof msg
-	return typ === 'string' || typ === 'number'
 }

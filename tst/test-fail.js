@@ -9,7 +9,7 @@ t.skip('1. primitives - comparison', function() {
 	t('==', true, false, 'Optional Additional Assertion Message')
 	t('<', 1, 2)
 	t('==', true, false)
-}, false, 'Optional Additional Test Set Message')
+}, 'Optional Additional Test Set Message')
 t('2. object - comparison', function() {
 	t('!{===}', [], 'str')
 	t('!==', [], 2)
