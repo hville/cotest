@@ -10,7 +10,7 @@
 - ~~browser use and/or version~~
 - TODO test crash on first t.skip call
 - `catch` replaced by `throws` and `!throws`
-- `only`
+- deprecate `only` argument
 
 
 ## [2.1.0] - 2017-03-17

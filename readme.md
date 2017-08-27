@@ -10,35 +10,32 @@
 
 # Why
 
-This originated as an attempt to have assertions that are less verbose because `assert.notDeepStrictEqual` is ugly
-(just try in other languages to get that first time feel once again: `verifier.nonEgaliteRecursiveStricte`)
-
-Package [tt](https://www.npmjs.com/package/tt) was used as a start and was modified considerably to change the API.
+This originated as an attempt to have assertions that are less verbose because `assert.notDeepStrictEqual` is ugly.
 
 # What
 
 ## Example
 
 ```javascript
-const t = require('cotest')
+const ct = require('cotest')
 
-co('1. primitives - comparison', function() {
-  co('==', 2, 2)
-  co('!==', 3, 4, 'should be unequal')
-  co('<', 1, 2)
-  co('!', null, 'should be falsy')
-  t.skip('>=', 55, 0, 'TODO')
+ct('1. primitives - comparison', function() {
+  ct('==', 2, 2)
+  ct('!==', 3, 4, 'should be unequal')
+  ct('<', 1, 2)
+  ct('!', null, 'should be falsy')
+  ct.skip('>=', 55, 0, 'TODO')
 })
-co('2. object - comparison', function() {
-  co('!{===}', [], 'str', 'should be notDeepStrictEqual')
-  co('{==}', [2], 2, 'should be deepEqual')
+ct('2. object - comparison', function() {
+  ct('!{===}', [], 'str', 'should be notDeepStrictEqual')
+  ct('{==}', [2], 2, 'should be deepEqual')
 })
-co('3. async', function(end) {
+ct('3. async', function(end) {
   setTimeout(end, 0)
-  co('!==', 3, 4)
-  co('!{==}', 3, 4)
+  ct('!==', 3, 4)
+  ct('!{==}', 3, 4)
 })
-co.skip('4. skip', function() {
+ct.skip('4. skip', function() {
   // all tests defined here will be skipped
 }, 'to be defined')
 ```
@@ -57,11 +54,8 @@ co.skip('4. skip', function() {
 * Skip full test groups or individual assertions with `t.skip()`
 * Only run selected test group(s) with `t.only()`
 * Basic test runner to run multiple files and directories
-* Single function, no methods, nothing to learn, nothing to remember
-* Basic coloring of errors
 * Compact reporting
 * Support only running selected tests for troubleshooting
-* No dependencies, under 200 SLOC
 
 ## Limitations
 
