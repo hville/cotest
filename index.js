@@ -20,12 +20,9 @@ var flags = false,
 		maxtime = 1000,
 		active = {}
 
-// color format and fixed text
-var NORM = '\u001b[0m',
-		RED = '\u001b[31m',
-		RET = '\n',
-		tab1 = '  ',
-		tab2 = '    '
+function alert(t) {
+	return '\u001b[31m' + t + '\u001b[0m'
+}
 
 module.exports = coTest
 
@@ -90,9 +87,9 @@ function init(flag, name, fcn, msg) {
  */
 function push(flag, name, fcn, msg) {
 	tests.push({
-		head: tab1 + name + ' [',
+		head: '  ' + name + ' [',
 		test: fcn,
-		text: msg ? tab1 +msg + RET : '',
+		text: msg ? '  ' +msg + '\n' : '',
 		flag: fcn ? flag : 'skip'
 	})
 	// if any test is flagged, non-flagged tests will be skipped
@@ -119,7 +116,7 @@ function test(flag, op, val, ref, msg) {
 		active.head += '.'
 	} catch (e) {
 		countA.fail++
-		active.head += RED + 'x' + NORM
+		active.head += alert('x')
 		//Error.captureStackTrace(e, coTest)
 		formatErrorStack(e)
 	}
@@ -139,8 +136,8 @@ function formatErrorStack(e) {
 	}
 	lst = lst.slice(start, until)
 
-	active.text += RET + RED + tab2 + e.message + NORM
-	if (lst.length) active.text += RET + tab2 + lst.join('\n' + tab2) + RET
+	active.text += '\n    ' + alert(e.message)
+	if (lst.length) active.text += '\n    ' + lst.join('\n    ') + '\n'
 }
 
 // close the assertion entries and perform pre-run ops
@@ -174,7 +171,7 @@ function runNext() {
 function timeoutFail() {
 	timeID = null
 	countA.fail++
-	active.head += RED + 'T' + NORM
+	active.head += alert('T')
 	log()
 }
 function timeoutPass() {
@@ -186,8 +183,8 @@ function timeoutPass() {
 
 
 function log() {
-	console.log(RET + active.head + ']')
-	if (active.text) console.log(RED + active.text + NORM)
+	console.log('\n' + active.head + ']')
+	if (active.text) console.log(alert(active.text))
 	setTimeout(runNext, 0)
 }
 
@@ -199,8 +196,8 @@ function done() {
 		countT.skip ? '('+countT.skip+' skipped)' : '==='
 	)
 
-	console.log(tab1+'pass '+countA.pass+'/'+sum)
-	countA.fail ? console.log(tab1 + RED + 'fail %d/%d'+NORM, countA.fail, sum) : console.log(tab1 + 'fail 0/%d', sum)
-	if (countA.skip) console.log(tab1 + RED + 'skip %d/%d'+NORM, countA.skip, sum)
+	console.log('  pass '+countA.pass+'/'+sum)
+	countA.fail ? console.log(alert('  fail %d/%d'), countA.fail, sum) : console.log('  fail 0/%d', sum)
+	if (countA.skip) console.log(alert('  skip %d/%d'), countA.skip, sum)
 	if (countA.fail) throw ('FAILED')
 }
