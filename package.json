@@ -1,8 +1,13 @@
 {
 	"name": "cotest",
-	"version": "1.6.1",
+	"version": "3.0.0",
 	"description": "unit test assertion and test runner using comparison operators",
-	"keywords": ["unit test", "test", "test runner"],
+	"keywords": [
+		"unit test",
+		"test",
+		"test runner",
+		"async"
+	],
 	"author": "Hugo Villeneuve",
 	"main": "./index.js",
 	"private": false,
@@ -13,16 +18,20 @@
 		"type": "git",
 		"url": "https://github.com/hville/cotest.git"
 	},
-	"dependencies": {},
-	"devDependencies": {},
+	"dependencies": {
+		"assert-op": "^0.1.0"
+	},
+	"devDependencies": {
+		"@types/node": "^8.0.25"
+	},
 	"scripts": {
-		"test": "npm run norm & npm run all",
+		"test": "npm run norm & npm run only & npm run only-first",
 		"norm": "node ./cli tst/test-norm",
 		"fail": "node ./cli tst/test-fail",
 		"time": "node ./cli tst/test-time",
 		"only": "node ./cli tst/test-only",
+		"only-first": "node ./cli tst/test-only-first",
 		"all": "node ./cli tst"
-
 	},
 	"license": "MIT",
 	"publishConfig": {

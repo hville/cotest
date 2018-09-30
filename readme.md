@@ -69,16 +69,16 @@ To change the default duration: `cotest.timeout(500)`
 
 ```javascript
 	var co = require('cotest')
-	co('async test, call the function argument to end' function(done) {
+	co('async test, call the function argument to end', function(done) {
 		co('<', Math.abs(error), 0.001)
 		setTimeout(done, 0)
 	})
-	co('sync test - no function argument needed' function() {
+	co('sync test - no function argument needed', function() {
 		co('==', 1+1, 2)
 		co('!', null)
 		co('{==}', [1, 2], [1, 2])
 	}, 'Any Truthy Value as 3rd argument will only run flagges tests')
-	co('sync test - no function argument needed' function() {
+	co('sync test - no function argument needed', function() {
 		co('==', 1+1, 2)
 		co('{==}', [1, 2], [1, 2])
 	})
