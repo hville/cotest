@@ -5,61 +5,24 @@ var tests = [],
 		index = -1,
 		timeID = null
 
-var currentMode = initMode, // --> push --> test
-		maxtime = 1000
+var maxtime = 1000,
+		timeout = null
 
 module.exports = coTest
 
 /**
- * Single test function to either declare a test or an assertion
- * @param {string} text test name or operator
- * @param {*} [fcnORval] test function or test value
- * @param {*} [onlyORref] message or only flag
- * @param {*} [msg] message
+ * @param {string} name
+ * @param {*} [fcn]
  * @return {void}
  */
-function coTest(text, fcnORval, onlyORref, msg) {
-	//@ts-ignore
-	currentMode('', text, fcnORval, onlyORref, msg)
+function coTest(name, fcn) {
+	pushTest('', name, fcn)
 }
+coTest.skip = pushTest.bind(null, 'skip')
+coTest.only = pushTest.bind(null, 'only')
+coTest.reporter = report
 coTest.timeout = function(ms) {
 	maxtime = ms
-}
-coTest.reporter = report
-/**
- * @param {string} text test name or operator
- * @param {*} fcnORval test function or test value
- * @param {*} [msgORref] message or only flag
- * @param {string} [msg] message
- * @return {void}
- */
-coTest.skip = function skip(text, fcnORval, msgORref, msg) {
-	//@ts-ignore
-	currentMode('skip', text, fcnORval, msgORref, msg)
-}
-/**
- * @param {string} text test name or operator
- * @param {*} fcnORval test function or test value
- * @param {*} [msgORref] message or only flag
- * @param {string} [msg] message
- * @return {void}
- */
-coTest.only = function only(text, fcnORval, msgORref, msg) {
-	//@ts-ignore
-	currentMode('only', text, fcnORval, msgORref, msg)
-}
-
-/**
- * @param {string} flag
- * @param {string} name test name
- * @param {*} fcn test function
- * @param {string} [msg] message
- * @return {void}
- */
-function initMode(flag, name, fcn, msg) {
-	pushMode(flag, name, fcn, msg)
-	currentMode = pushMode
-	setTimeout(exec, 0)
 }
 
 /**
@@ -70,7 +33,8 @@ function initMode(flag, name, fcn, msg) {
  * @param {string} [note]
  * @return {void}
  */
-function pushMode(flag, name, test, note) {
+function pushTest(flag, name, test, note) {
+	if (!timeout) timeout = setTimeout(exec, 0)
 	tests.push({
 		name: name,
 		test: test,
@@ -81,15 +45,14 @@ function pushMode(flag, name, test, note) {
 }
 
 /**
- * @param {string} flag
  * @param {string} op
  * @param {*} val
  * @param {*} [ref]
  * @param {*} [msg]
  * @return {void}
  */
-function testMode(flag, op, val, ref, msg) {
-	if (flag === 'skip' || op === 'skip') return tests[index].errs.push('skip')
+function asserter(op, val, ref, msg) {
+	if (op === 'skip') return tests[index].errs.push('skip')
 	try {
 		assert(op, val, ref, msg)
 		tests[index].errs.push('')
@@ -97,19 +60,22 @@ function testMode(flag, op, val, ref, msg) {
 		tests[index].errs.push(err.stack || err.message) //TODO Error.captureStackTrace(e, coTest)
 	}
 }
+asserter.skip = function() {
+	return tests[index].errs.push('skip')
+}
+
 
 // close the assertion entries and perform pre-run ops
+function exec() {
+	if (tests.some(isOnly)) tests.forEach(deRank)
+	setTimeout(runNext, 0)
+}
 function isOnly(t) {
 	return t.flag === 'only'
 }
 function deRank(t) {
 	if (t.flag === 'only') t.flag = ''
 	else t.flag = 'skip'
-}
-function exec() {
-	currentMode = testMode
-	if (tests.some(isOnly)) tests.forEach(deRank)
-	setTimeout(runNext, 0)
 }
 
 // perform every tests
@@ -120,19 +86,20 @@ function runNext() {
 	if (tests[index].flag === 'skip') return runNext()
 
 	//sync test
-	if (!tests[index].test.length) {
-		tests[index].test()
+	if (tests[index].test.length < 2) {
+		tests[index].test(asserter)
 		return runNext()
 	}
 	//async test
 	timeID = setTimeout(endAsyncTest, maxtime, 'timeout')
-	tests[index].test(endAsyncTest)
+	tests[index].test(asserter, endAsyncTest)
 }
 
-function endAsyncTest() {
+function endAsyncTest(errorMessage) {
 	if (timeID !== null) {
 		clearTimeout(timeID)
 		timeID = null
+		if (errorMessage) tests[index].errs.push(errorMessage)
 		runNext()
 	}
 }

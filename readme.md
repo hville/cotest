@@ -19,25 +19,25 @@ This originated as an attempt to have assertions that are less verbose because `
 ```javascript
 const ct = require('cotest')
 
-ct('1. primitives - comparison', function() {
-  ct('==', 2, 2)
-  ct('!==', 3, 4, 'should be unequal')
-  ct('<', 1, 2)
-  ct('!', null, 'should be falsy')
-  ct.skip('>=', 55, 0, 'TODO')
+ct('1. primitives - comparison', function(t) {
+  t('==', 2, 2)
+  t('!==', 3, 4, 'should be unequal')
+  t('<', 1, 2)
+  t('!', null, 'should be falsy')
+  t.skip('>=', 55, 0, 'TODO')
 })
-ct('2. object - comparison', function() {
-  ct('!{===}', [], 'str', 'should be notDeepStrictEqual')
-  ct('{==}', [2], 2, 'should be deepEqual')
+ct('2. object - comparison', function(t) {
+  t('!{===}', [], 'str', 'should be notDeepStrictEqual')
+  t('{==}', [2], 2, 'should be deepEqual')
 })
-ct('3. async', function(end) {
+ct('3. async', function(t, end) {
   setTimeout(end, 0)
-  ct('!==', 3, 4)
-  ct('!{==}', 3, 4)
+  t('!==', 3, 4)
+  t('!{==}', 3, 4)
 })
-ct.skip('4. skip', function() {
+ct.skip('4. skip', function(t) {
   // all tests defined here will be skipped
-}, 'to be defined')
+})
 ```
 
 ## Features
@@ -81,16 +81,16 @@ In node, from the project root folder type `npm i -D cotest` to install.
 if no test function is provided, the test will be marked as skipped
 
 ### Assertion Declaration
-* `cotest(operator, valueToTest, referenceValue[, additional message])`
-* `cotest.skip(operator, valueToTest, referenceValue[, additional message])`
+* `assert(operator, valueToTest, referenceValue[, additional message])`
+* `assert.skip(operator, valueToTest, referenceValue[, additional message])`
 
 ### Async use
 
 Test are normally automatically completed after the test function is executed.
-Example: `cotest('syncTest', function() { /*assertions*/ })`
+Example: `cotest('syncTest', function(assert) { /*assertions*/ })`
 
 To change this behaviour, add a callback to the test function. This calback must be called to end the test.
-Example: `cotest('asyncTest', function(done) { /*assertions*/; done()})`
+Example: `cotest('asyncTest', function(assert, done) { /*assertions*/; done()})`
 
 If a callback is declared but not called, the test fails after 250ms.
 To change the default duration: `cotest.timeout(500)`
@@ -99,18 +99,18 @@ To change the default duration: `cotest.timeout(500)`
 
 ```javascript
 	var co = require('cotest')
-	co('async test, call the function argument to end', function(done) {
-		co('<', Math.abs(error), 0.001)
+	co('async test, call the function argument to end', function(t, done) {
+		t('<', Math.abs(error), 0.001)
 		setTimeout(done, 0)
 	})
-	co('sync test - no function argument needed', function() {
-		co('==', 1+1, 2)
-		co('!', null)
-		co('{==}', [1, 2], [1, 2])
+	co('sync test - no function argument needed', function(t) {
+		t('==', 1+1, 2)
+		t('!', null)
+		t('{==}', [1, 2], [1, 2])
 	}, 'Any Truthy Value as 3rd argument will only run flagges tests')
-	co('sync test - no function argument needed', function() {
-		co('==', 1+1, 2)
-		co('{==}', [1, 2], [1, 2])
+	co('sync test - no function argument needed', function(t) {
+		t('==', 1+1, 2)
+		t('{==}', [1, 2], [1, 2])
 	})
 ```
 

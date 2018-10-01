@@ -1,9 +1,9 @@
 /* eslint no-console: 0, no-loop-func: 0*/
-var t = require('../index')
+var ct = require('../index')
 
-t.skip('0. skipped test')
+ct.skip('0. skipped test')
 
-t('1. primitives - comparison', function() {
+ct('1. primitives - comparison', function(t) {
 	t('==', 2, 2)
 	t('!==', 3, 4)
 	t('<', 1, 2)
@@ -13,30 +13,30 @@ t('1. primitives - comparison', function() {
 	t('!', null)
 	t('!!', 55)
 })
-t('2. object - comparison', function() {
+ct('2. object - comparison', function(t) {
 	t('!{===}', [], 'str')
 	t('!==', [], 2)
 })
-t('3. async', function(end) {
+ct('3. async', function(t, end) {
 	setTimeout(end, 0)
 	t('!==', 3, 4)
 	t('!{==}', 3, 4)
 })
-t('4. more async', function(end) {
+ct('4. more async', function(t, end) {
 	setTimeout(end, 0)
 	t('!==', 3, 4)
 	t('!{==}', 3, 4)
 })
-t.skip('skip async', function(end) {
+ct.skip('skip async', function(t, end) {
 	setTimeout(end, 0)
 	t('!==', 3, 4)
 	t('!{==}', 3, 4)
 })
-t('skip assertions', function() {
+ct('skip assertions', function(t) {
 	t.skip('!==', 3, 4)
 	t('skip', 3, 4)
 })
-t('throws operator', function() {
+ct('throws operator', function(t) {
 	t('throws', function() { throw Error() })
 	t('throws', function() { throw Error() }, 'should throw')
 	t('throws', function() { throw Error() }, Error)

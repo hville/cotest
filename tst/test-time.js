@@ -1,11 +1,11 @@
 /* eslint no-console: 0, no-loop-func: 0, no-unused-vars:0*/
-var t = require('../index')
+var ct = require('../index')
 
-t('timeout', function(end) {
+ct('timeout', function(t, end) {
 	t('==', true, true)
 	t('!{==}', 3, 4)
 })
-t('4. more async', function(end) {
+ct('4. more async', function(t, end) {
 	setTimeout(end, 0)
 	t('!==', 3, 4)
 	t('!{==}', 3, 4)

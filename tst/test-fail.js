@@ -1,37 +1,41 @@
 /* eslint no-console: 0, no-loop-func: 0*/
-var t = require('../index')
+var ct = require('../index')
 
-t('0. empty test, no function')
+ct('empty test, no function')
 
-t.skip('1. primitives - comparison', function() {
+ct('sync', function(t) {
 	t('==', 2, 2)
-	t('!==', 3, 4)
-	t('==', true, false, 'Optional Additional Assertion Message')
-	t('<', 1, 2)
-	t('==', true, false)
-}, 'Optional Additional Test Set Message')
-
-t('2. object - comparison', function() {
-	t('!{===}', [], 'str')
-	t('!==', [], 2)
+	t('==', true, false, 'true should be false')
 })
 
-t('3. async', function(end) {
+ct('async - pass', function(t, end) {
 	setTimeout(end, 0)
-	t('==', true, false)
-	t('!', true)
-	t('!!', false, 'should be something that it is not')
-	t('!{==}', 3, 4)
-}, 'Other Test Comment')
-
-t('4. more async', function(end) {
-	setTimeout(end, 0)
-	t('!==', 3, 4)
-	t('!{==}', 3, 4)
+	t('==', true, true)
 })
 
-t.skip('5. more skip', function(end) {
+ct('async - fail', function(t, end) {
 	setTimeout(end, 0)
-	t('!==', 3, 4)
-	t('!{==}', 3, 4)
+	t('==', true, false)
+})
+
+ct('async - fail end', function(t, end) {
+	setTimeout(end, 0, 'failed on close')
+	t('==', true, true)
+})
+
+ct('async - timeout', function(t, end) {
+	setTimeout(end, 3000)
+	t('==', true, true)
+})
+
+ct.skip('skip test', function(t) {
+	t('==', true, true)
+})
+
+ct('skip assert', function(t) {
+	t.skip('===', true, true)
+})
+
+ct('skip op', function(t) {
+	t('skip', true, true)
 })
