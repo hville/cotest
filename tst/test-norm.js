@@ -34,7 +34,7 @@ t.skip('skip async', function(end) {
 })
 t('skip assertions', function() {
 	t.skip('!==', 3, 4)
-	t('!{==}', 3, 4)
+	t('skip', 3, 4)
 })
 t('throws operator', function() {
 	t('throws', function() { throw Error() })

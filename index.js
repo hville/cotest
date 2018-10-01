@@ -1,28 +1,12 @@
-/* eslint eqeqeq: 0, no-console: 0*/
-'use strict'
-
-var assert = require('assert-op')
+var assert = require('assert-op'),
+		report = require('./report')
 
 var tests = [],
-		timeID = null,
-		countT = {
-			done: 0,
-			skip: 0
-		},
-		countA = {
-			pass: 0,
-			fail: 0,
-			skip: 0
-		}
+		index = -1,
+		timeID = null
 
-var flags = false,
-		currentMode = init, // --> push --> test
-		maxtime = 1000,
-		active = {}
-
-function alert(t) {
-	return '\u001b[31m' + t + '\u001b[0m'
-}
+var currentMode = initMode, // --> push --> test
+		maxtime = 1000
 
 module.exports = coTest
 
@@ -41,6 +25,7 @@ function coTest(text, fcnORval, onlyORref, msg) {
 coTest.timeout = function(ms) {
 	maxtime = ms
 }
+coTest.reporter = report
 /**
  * @param {string} text test name or operator
  * @param {*} fcnORval test function or test value
@@ -71,133 +56,83 @@ coTest.only = function only(text, fcnORval, msgORref, msg) {
  * @param {string} [msg] message
  * @return {void}
  */
-function init(flag, name, fcn, msg) {
-	push(flag, name, fcn, msg)
-	currentMode = push
+function initMode(flag, name, fcn, msg) {
+	pushMode(flag, name, fcn, msg)
+	currentMode = pushMode
 	setTimeout(exec, 0)
 }
 
 /**
  * add every asserting function to the list of tests
  * @param {string} flag
- * @param {string} name test name
- * @param {Function} fcn test function
- * @param {string} [msg] message
+ * @param {string} name
+ * @param {Function} test
+ * @param {string} [note]
  * @return {void}
  */
-function push(flag, name, fcn, msg) {
+function pushMode(flag, name, test, note) {
 	tests.push({
-		head: '  ' + name + ' [',
-		test: fcn,
-		text: msg ? '  ' +msg + '\n' : '',
-		flag: fcn ? flag : 'skip'
+		name: name,
+		test: test,
+		note: note || '',
+		flag: test ? flag : 'skip',
+		errs: []
 	})
-	// if any test is flagged, non-flagged tests will be skipped
-	if (!flags && flag === 'only') flags = true
 }
 
 /**
  * @param {string} flag
- * @param {string} op test operator
- * @param {*} val test value
- * @param {*} [ref] reference value
- * @param {*} [msg] message
+ * @param {string} op
+ * @param {*} val
+ * @param {*} [ref]
+ * @param {*} [msg]
  * @return {void}
  */
-function test(flag, op, val, ref, msg) {
-	if (flag === 'skip' || op === 'skip') {
-		countA.skip++
-		active.head += 's'
-		return
-	}
+function testMode(flag, op, val, ref, msg) {
+	if (flag === 'skip' || op === 'skip') return tests[index].errs.push('skip')
 	try {
 		assert(op, val, ref, msg)
-		countA.pass++
-		active.head += '.'
-	} catch (e) {
-		countA.fail++
-		active.head += alert('x')
-		//Error.captureStackTrace(e, coTest)
-		formatErrorStack(e)
+		tests[index].errs.push('')
+	} catch (err) {
+		tests[index].errs.push(err.stack || err.message) //TODO Error.captureStackTrace(e, coTest)
 	}
-}
-
-
-var coTestRE = /coTest/,
-		runNextRE = /runNext/
-function formatErrorStack(e) {
-	var lst = e.stack ? e.stack.split(/\n/) : [],
-			start = 0,
-			until = lst.length
-	for (var i=0; i<until; ++i) {
-		lst[i] = lst[i].trim()
-		if (!start && coTestRE.test(lst[i])) start = i+1
-		else if (start && runNextRE.test(lst[i])) until = i
-	}
-	lst = lst.slice(start, until)
-
-	active.text += '\n    ' + alert(e.message)
-	if (lst.length) active.text += '\n    ' + lst.join('\n    ') + '\n'
 }
 
 // close the assertion entries and perform pre-run ops
+function isOnly(t) {
+	return t.flag === 'only'
+}
+function deRank(t) {
+	if (t.flag === 'only') t.flag = ''
+	else t.flag = 'skip'
+}
 function exec() {
-	currentMode = test
-	console.log('\n\n=== coTest ===')
+	currentMode = testMode
+	if (tests.some(isOnly)) tests.forEach(deRank)
 	setTimeout(runNext, 0)
 }
 
 // perform every tests
 function runNext() {
-	if (!tests.length) return done()
-	active = tests.shift()
+	if (++index === tests.length) return coTest.reporter(tests)
+
 	// skipped test with 'false' flag ... if any test is flagged, ignore all unflagged tests
-	if (active.flag === 'skip' || (flags && active.flag !== 'only')) {
-		active.head += 'SKIP'
-		countT.skip++
-		log()
+	if (tests[index].flag === 'skip') return runNext()
+
+	//sync test
+	if (!tests[index].test.length) {
+		tests[index].test()
+		return runNext()
 	}
-	else if (!active.test.length) {
-		active.test(log)
-		countT.done++
-		log()
-	}
-	else {
-		timeID = setTimeout(timeoutFail, maxtime)
-		active.test(timeoutPass)
-	}
+	//async test
+	timeID = setTimeout(endAsyncTest, maxtime, 'timeout')
+	tests[index].test(endAsyncTest)
 }
 
-function timeoutFail() {
-	timeID = null
-	countA.fail++
-	active.head += alert('T')
-	log()
-}
-function timeoutPass() {
+function endAsyncTest() {
 	if (timeID !== null) {
 		clearTimeout(timeID)
-		log()
+		timeID = null
+		runNext()
 	}
-}
-
-
-function log() {
-	console.log('\n' + active.head + ']')
-	if (active.text) console.log(alert(active.text))
-	setTimeout(runNext, 0)
-}
-
-function done() {
-	var sum = countA.pass + countA.fail + countA.skip
-
-	console.log('\n===',
-		'END OF ' + countT.done + (countT.done > 1 ? ' TESTS' : ' TEST'),
-		countT.skip ? '('+countT.skip+' skipped)' : '==='
-	)
-
-	console.log('  pass '+countA.pass+'/'+sum)
-	countA.fail ? console.log(alert('  fail %d/%d'), countA.fail, sum) : console.log('  fail 0/%d', sum)
-	if (countA.skip) console.log(alert('  skip %d/%d'), countA.skip, sum)
-	if (countA.fail) throw ('FAILED')
 }
