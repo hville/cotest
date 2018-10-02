@@ -50,12 +50,12 @@ function runNext() {
 	if (++index === tests.length) return cotest.reporter(tests)
 
 	// skipped test with 'false' flag ... if any test is flagged, ignore all unflagged tests
-	if (tests[index].flag === 'skip') return runNext()
+	if (tests[index].flag === 'skip') return setTimeout(runNext, 0)
 
 	//sync test
 	if (tests[index].test.length < 2) {
 		tests[index].test(asserter)
-		return runNext()
+		return setTimeout(runNext, 0)
 	}
 	//async test
 	timeID = setTimeout(endAsyncTest, cotest.timeout, 'timeout')
@@ -67,7 +67,7 @@ function endAsyncTest(errorMessage) {
 		clearTimeout(timeID)
 		timeID = null
 		if (errorMessage) tests[index].errs.push(errorMessage)
-		runNext()
+		setTimeout(runNext, 0)
 	}
 }
 

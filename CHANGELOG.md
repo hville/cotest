@@ -1,12 +1,16 @@
 <!-- markdownlint-disable MD012 MD022 MD024 MD026 MD032 MD041 -->
 
 # Change Log
-
 - based on [Keep a Changelog](http://keepachangelog.com/)
 - adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 - ~~Removed, Changed, Deprecated, Added, Fixed, Security~~
+
+## [4.0.0] - 2018-10-01
+### Change
+- new test function signature (assert, done) => void
+- cotest no longer variadic
 
 ## [3.0.0] - 2017-08-27
 ### Change
@@ -14,7 +18,6 @@
 - deprecate `only` argument (undocumented)
 - moved assertions in external `assert-op` lib
 - removed calls to node `assert` and `process` to allow browser use
-
 
 ## [2.1.0] - 2017-03-17
 ### Fixed
