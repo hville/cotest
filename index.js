@@ -1,35 +1,22 @@
 var assert = require('assert-op'),
 		report = require('./report')
 
-var tests = [],
-		index = -1,
-		timeID = null
+var timeout = null,
+		timeID = null,
+		tests = [],
+		index = -1
 
-var maxtime = 1000,
-		timeout = null
-
-module.exports = coTest
-
-/**
- * @param {string} name
- * @param {*} [fcn]
- * @return {void}
- */
-function coTest(name, fcn) {
-	pushTest('', name, fcn)
-}
-coTest.skip = pushTest.bind(null, 'skip')
-coTest.only = pushTest.bind(null, 'only')
-coTest.reporter = report
-coTest.timeout = function(ms) {
-	maxtime = ms
-}
+var cotest = module.exports = pushTest.bind(null, '')
+cotest.skip = pushTest.bind(null, 'skip')
+cotest.only = pushTest.bind(null, 'only')
+cotest.reporter = report
+cotest.timeout = 1000
 
 /**
  * add every asserting function to the list of tests
  * @param {string} flag
  * @param {string} name
- * @param {Function} test
+ * @param {Function} [test]
  * @param {string} [note]
  * @return {void}
  */
@@ -42,6 +29,46 @@ function pushTest(flag, name, test, note) {
 		flag: test ? flag : 'skip',
 		errs: []
 	})
+}
+
+// close the assertion entries and perform pre-run ops
+function exec() {
+	if (tests.some(isOnly)) tests.forEach(deRank)
+	setTimeout(runNext, 0)
+}
+function isOnly(t) {
+	return t.flag === 'only'
+}
+function deRank(t) {
+	if (t.flag === 'only') t.flag = ''
+	else t.flag = 'skip'
+}
+
+
+// perform every tests
+function runNext() {
+	if (++index === tests.length) return cotest.reporter(tests)
+
+	// skipped test with 'false' flag ... if any test is flagged, ignore all unflagged tests
+	if (tests[index].flag === 'skip') return runNext()
+
+	//sync test
+	if (tests[index].test.length < 2) {
+		tests[index].test(asserter)
+		return runNext()
+	}
+	//async test
+	timeID = setTimeout(endAsyncTest, cotest.timeout, 'timeout')
+	tests[index].test(asserter, endAsyncTest)
+}
+
+function endAsyncTest(errorMessage) {
+	if (timeID !== null) {
+		clearTimeout(timeID)
+		timeID = null
+		if (errorMessage) tests[index].errs.push(errorMessage)
+		runNext()
+	}
 }
 
 /**
@@ -57,49 +84,21 @@ function asserter(op, val, ref, msg) {
 		assert(op, val, ref, msg)
 		tests[index].errs.push('')
 	} catch (err) {
-		tests[index].errs.push(err.stack || err.message) //TODO Error.captureStackTrace(e, coTest)
+		tests[index].errs.push(err.stack ? trimStack(err.stack) : err.message) //TODO Error.captureStackTrace(e, coTest)
 	}
 }
 asserter.skip = function() {
 	return tests[index].errs.push('skip')
 }
 
+function trimStack(errorStack) {
+	var lst = errorStack.split(/\n/),
+			start = 1
 
-// close the assertion entries and perform pre-run ops
-function exec() {
-	if (tests.some(isOnly)) tests.forEach(deRank)
-	setTimeout(runNext, 0)
-}
-function isOnly(t) {
-	return t.flag === 'only'
-}
-function deRank(t) {
-	if (t.flag === 'only') t.flag = ''
-	else t.flag = 'skip'
-}
-
-// perform every tests
-function runNext() {
-	if (++index === tests.length) return coTest.reporter(tests)
-
-	// skipped test with 'false' flag ... if any test is flagged, ignore all unflagged tests
-	if (tests[index].flag === 'skip') return runNext()
-
-	//sync test
-	if (tests[index].test.length < 2) {
-		tests[index].test(asserter)
-		return runNext()
+	for (var i=0; i<lst.length; ++i) {
+		lst[i] = lst[i].trim()
+		if (/asserter/.test(lst[i])) start = i+1
+		else if (/runNext/.test(lst[i])) break
 	}
-	//async test
-	timeID = setTimeout(endAsyncTest, maxtime, 'timeout')
-	tests[index].test(asserter, endAsyncTest)
-}
-
-function endAsyncTest(errorMessage) {
-	if (timeID !== null) {
-		clearTimeout(timeID)
-		timeID = null
-		if (errorMessage) tests[index].errs.push(errorMessage)
-		runNext()
-	}
+	return [].concat(lst[0], lst.slice(start, i)).join('\n')
 }

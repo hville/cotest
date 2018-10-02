@@ -92,8 +92,11 @@ Example: `cotest('syncTest', function(assert) { /*assertions*/ })`
 To change this behaviour, add a callback to the test function. This calback must be called to end the test.
 Example: `cotest('asyncTest', function(assert, done) { /*assertions*/; done()})`
 
-If a callback is declared but not called, the test fails after 250ms.
-To change the default duration: `cotest.timeout(500)`
+An error message can be passed to the `done`function.
+Example: `cotest('asyncTest', function(assert, done) { if (true) done() else done('failed') })`
+
+If a callback is declared but not called, the test fails after 1000ms.
+To change the default duration: `cotest.timeout = 1500`
 
 ## Use in a test file
 

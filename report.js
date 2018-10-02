@@ -18,7 +18,7 @@ module.exports = function report(tests) {
 				default:
 					++failCount
 					head += alert('x')
-					note += '\n    ' + formatErrorStack(test.errs[j])
+					note += '\n    ' + test.errs[j].replace(/\n/, '\n    ') //TODOlst[0] + '\n    ' + lst.slice(start, i).join('\n    ')
 			}
 		}
 		if (test.flag) {
@@ -38,15 +38,4 @@ module.exports = function report(tests) {
 
 function alert(t) {
 	return '\u001b[31m' + t + '\u001b[0m'
-}
-
-function formatErrorStack(errorStack) { //TODO move part to main (depends on internals)
-	var lst = errorStack.split(/\n/),
-			start = 1
-	for (var i=1; i<lst.length; ++i) {
-		lst[i] = lst[i].trim()
-		if (/asserter/.test(lst[i])) start = i+1 //TODO CHANGENAME
-		else if (start && /runNext/.test(lst[i])) break //TODO CHANGENAME
-	}
-	return lst[0] + '\n    ' + lst.slice(start, i).join('\n    ')
 }
