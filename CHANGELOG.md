@@ -7,6 +7,10 @@
 ## [Unreleased]
 - ~~Removed, Changed, Deprecated, Added, Fixed, Security~~
 
+## [4.0.1] - 2018-11-04
+### Added
+- promise
+
 ## [4.0.0] - 2018-10-01
 ### Change
 - new test function signature (assert, done) => void

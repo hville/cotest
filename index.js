@@ -53,10 +53,10 @@ function runNext() {
 	if (tests[index].flag === 'skip') return setTimeout(runNext, 0)
 
 	//sync test
-	if (tests[index].test.length < 2) {
+	if (tests[index].test.length < 2) return Promise.resolve(
 		tests[index].test(asserter)
-		return setTimeout(runNext, 0)
-	}
+	).then(function() { setTimeout(runNext, 0) })
+
 	//async test
 	timeID = setTimeout(endAsyncTest, cotest.timeout, 'timeout')
 	tests[index].test(asserter, endAsyncTest)
