@@ -7,6 +7,10 @@
 ## [Unreleased]
 - ~~Removed, Changed, Deprecated, Added, Fixed, Security~~
 
+## [4.0.2] - 2019-02-24
+### Changed
+- update asserter
+
 ## [4.0.1] - 2018-11-04
 ### Added
 - promise

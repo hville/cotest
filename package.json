@@ -1,6 +1,6 @@
 {
 	"name": "cotest",
-	"version": "4.0.1",
+	"version": "4.0.2",
 	"description": "unit test assertion and test runner using comparison operators",
 	"keywords": [
 		"unit test",
@@ -19,10 +19,10 @@
 		"url": "https://github.com/hville/cotest.git"
 	},
 	"dependencies": {
-		"assert-op": "^0.2.1"
+		"assert-op": "^0.3.0"
 	},
 	"devDependencies": {
-		"@types/node": "^8.10.37"
+		"@types/node": "^11.9.5"
 	},
 	"scripts": {
 		"test": "npm run norm & npm run only & npm run only-first",
